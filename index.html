@@ -1,0 +1,1718 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>RECNATORS CUP — Painel</title>
+
+  <!-- (Opcional PWA) Se você usar manifest/sw depois, descomente:
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b1020">
+  -->
+
+  <style>
+    :root{
+      --bg:#070a12;
+      --bg2:#0b1020;
+      --glass:rgba(255,255,255,.06);
+      --glass2:rgba(0,0,0,.28);
+      --line:rgba(255,255,255,.12);
+      --txt:#e8eefc;
+      --muted:#a9b4d0;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --accent:#60a5fa;
+      --accent2:#a78bfa;
+      --gold:#fbbf24;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r:22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--txt);
+      background:
+        radial-gradient(1200px 700px at 50% 20%, #1a2550 0%, var(--bg2) 45%, #04050a 100%);
+      overflow-x:hidden;
+    }
+    a{ color:inherit; }
+    .wrap{ max-width:1240px; margin:0 auto; padding:14px; }
+
+    header{
+      position:sticky; top:10px; z-index:30;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.25));
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+      overflow:hidden;
+    }
+
+    .headTop{
+      display:flex; gap:12px; align-items:center; justify-content:space-between;
+      padding:14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex; gap:12px; align-items:center;
+      min-width:260px;
+    }
+    .logo{
+      width:48px; height:48px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      overflow:hidden;
+    }
+    .logo span{ font-size:22px; }
+    .brand h1{
+      margin:0;
+      font-size:15px;
+      font-weight:1000;
+      letter-spacing:.5px;
+      line-height:1.1;
+    }
+    .brand p{
+      margin:2px 0 0 0;
+      font-size:12px;
+      font-weight:850;
+      color:var(--muted);
+      line-height:1.35;
+    }
+
+    .rightBox{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end;
+    }
+
+    .statusPill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      font-weight:950;
+      font-size:12px;
+      display:flex; gap:8px; align-items:center;
+      white-space:nowrap;
+    }
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: rgba(255,255,255,.25);
+    }
+    .dot.ok{ background: rgba(34,197,94,.8); }
+    .dot.off{ background: rgba(239,68,68,.8); }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:1000;
+      cursor:pointer;
+      transition: transform .08s ease, border-color .2s ease, background .2s ease;
+    }
+    .btn:hover{ border-color: rgba(96,165,250,.35); }
+    .btn:active{ transform: scale(.98); }
+    .btn.danger{
+      border-color: rgba(239,68,68,.35);
+      background: rgba(239,68,68,.12);
+    }
+    .btn.gold{
+      border-color: rgba(251,191,36,.35);
+      background: rgba(251,191,36,.12);
+    }
+
+    /* Main tabs */
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:12px 14px;
+      background: rgba(0,0,0,.16);
+      justify-content:flex-start;
+    }
+    .tab{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+    }
+    .tab[aria-selected="true"]{
+      background: rgba(96,165,250,.18);
+      border-color: rgba(96,165,250,.35);
+    }
+
+    main{ margin-top:14px; display:grid; gap:14px; }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.35));
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .cardHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding:14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      flex-wrap:wrap;
+    }
+    .cardHead h2{
+      margin:0;
+      font-size:14px;
+      font-weight:1000;
+      letter-spacing:.5px;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+    }
+    .section{ padding:14px; }
+
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:10px;
+    }
+    .kpi{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      border-radius:18px;
+      padding:12px;
+      overflow:hidden;
+    }
+    .kpi .n{ font-size:22px; font-weight:1100; }
+    .kpi .l{ font-size:12px; font-weight:900; color:var(--muted); }
+
+    /* Sub tabs (groups / days) */
+    .subtabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .subtab{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:9px 11px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:12px;
+    }
+    .subtab[aria-selected="true"]{
+      background: rgba(167,139,250,.16);
+      border-color: rgba(167,139,250,.35);
+    }
+
+    .dayTabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    .daytab{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color:var(--txt);
+      padding:9px 11px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:1000;
+      font-size:12px;
+    }
+    .daytab[aria-selected="true"]{
+      background: rgba(96,165,250,.18);
+      border-color: rgba(96,165,250,.35);
+    }
+
+    /* Match cards */
+    .matches{ padding:14px; display:grid; gap:12px; }
+    .match{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      border-radius:20px;
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .matchTop{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:950;
+    }
+    .pill{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-weight:1000;
+      color:var(--txt);
+      white-space:nowrap;
+      font-size:12px;
+    }
+    .pill.good{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.10); }
+    .pill.bad{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.10); }
+
+    .rowTeams{
+      display:grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap:10px;
+      align-items:center;
+    }
+    .side{
+      display:flex; align-items:center; gap:10px;
+      min-width:0;
+    }
+    .side.right{ justify-content:flex-end; }
+    .badge{
+      width:56px; height:56px;
+      border-radius:18px;
+      display:grid; place-items:center;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-weight:1100;
+      letter-spacing:.6px;
+      flex:0 0 auto;
+    }
+    .name{
+      font-weight:1100;
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .vs{
+      font-weight:1100;
+      opacity:.85;
+      padding:6px 10px;
+    }
+
+    .games{
+      display:grid;
+      gap:8px;
+    }
+    .gameRow{
+      display:grid;
+      grid-template-columns: 56px 1fr 22px 1fr;
+      gap:10px;
+      align-items:center;
+    }
+    .glabel{ color:var(--muted); font-size:12px; font-weight:1000; }
+
+    .score{
+      width:100%;
+      padding:10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--txt);
+      font-weight:1100;
+      font-size:16px;
+      text-align:center;
+      outline:none;
+    }
+    .score:focus{
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+    }
+    .score:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+    input[type=number]{ -moz-appearance:textfield; }
+
+    .note{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      line-height:1.4;
+    }
+
+    /* Tables */
+    .tablesGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (min-width: 980px){
+      .tablesGrid{ grid-template-columns: 1fr 1fr; }
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+    }
+    thead th{
+      background: rgba(0,0,0,.35);
+      border-bottom:1px solid rgba(255,255,255,.12);
+      padding:10px 8px;
+      font-size:12px;
+      text-align:center;
+      color:var(--muted);
+      white-space:nowrap;
+      font-weight:1000;
+    }
+    tbody td{
+      padding:10px 8px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size:13px;
+      text-align:center;
+      vertical-align:middle;
+      font-weight:1000;
+    }
+    tbody tr:last-child td{ border-bottom:none; }
+    .tdTeam{
+      text-align:left;
+      display:flex; align-items:center; gap:10px;
+      min-width:0;
+    }
+    .miniBadge{
+      width:34px; height:34px;
+      border-radius:12px;
+      display:grid; place-items:center;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-weight:1100;
+      flex:0 0 auto;
+    }
+    .rankBar{
+      width:10px; height:22px;
+      border-radius:999px;
+      background: rgba(255,255,255,.10);
+      flex:0 0 auto;
+    }
+    .rowGood{ background: rgba(34,197,94,.06); }
+    .rowBad{ background: rgba(239,68,68,.05); }
+    .rowGood .rankBar{ background: rgba(34,197,94,.55); }
+    .rowBad .rankBar{ background: rgba(239,68,68,.55); }
+
+    /* AI */
+    .chatWrap{
+      display:grid;
+      gap:10px;
+    }
+    .chatBox{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius:22px;
+      overflow:hidden;
+    }
+    .chatHead{
+      padding:12px 14px;
+      background: rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      font-weight:1100;
+    }
+    .chatBody{
+      height:320px;
+      overflow:auto;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      font-size:13px;
+    }
+    .bubble{
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      line-height:1.35;
+      font-weight:850;
+      max-width: 92%;
+    }
+    .bubble.me{
+      align-self:flex-end;
+      border-color: rgba(96,165,250,.25);
+      background: rgba(96,165,250,.10);
+    }
+    .bubble.bot{
+      align-self:flex-start;
+      border-color: rgba(167,139,250,.25);
+      background: rgba(167,139,250,.08);
+    }
+    .chatInput{
+      display:flex;
+      border-top:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+    }
+    .chatInput input{
+      flex:1;
+      border:none;
+      padding:12px 12px;
+      background:transparent;
+      color:var(--txt);
+      font-weight:950;
+      outline:none;
+    }
+    .chatInput button{
+      border:none;
+      padding:12px 14px;
+      background: rgba(96,165,250,.92);
+      color:white;
+      cursor:pointer;
+      font-weight:1100;
+    }
+
+    /* ADM */
+    .formGrid{
+      display:grid;
+      gap:10px;
+      max-width: 460px;
+    }
+    .field{
+      display:grid;
+      gap:6px;
+    }
+    .label{
+      font-size:12px;
+      font-weight:1000;
+      color:var(--muted);
+    }
+    .input{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--txt);
+      padding:12px 12px;
+      border-radius:16px;
+      outline:none;
+      font-weight:1000;
+    }
+    .input:focus{
+      border-color: rgba(167,139,250,.55);
+      box-shadow: 0 0 0 3px rgba(167,139,250,.18);
+    }
+
+    .toast{
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: rgba(232,238,252,.92);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    @media (max-width: 860px){
+      .kpis{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px){
+      .kpis{ grid-template-columns: 1fr; }
+      .rowTeams{ grid-template-columns: 1fr; }
+      .side, .side.right{ justify-content:center; }
+      .vs{ text-align:center; }
+      .gameRow{ grid-template-columns: 54px 1fr 18px 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="headTop">
+        <div class="brand">
+          <div class="logo"><span>🏆</span></div>
+          <div>
+            <h1>RECNATORS CUP</h1>
+            <p>Jogos por grupo/dia • Classificação automática • IA do campeonato • ADM com login</p>
+          </div>
+        </div>
+
+        <div class="rightBox">
+          <div class="statusPill" id="adminPill" title="Somente admins podem editar os placares">
+            <span class="dot off" id="adminDot"></span>
+            <span id="adminText">Modo público (sem edição)</span>
+          </div>
+
+          <button class="btn gold" id="btnCopyResumo">Copiar resumo</button>
+          <button class="btn danger" id="btnResetAll">Reset geral</button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Abas principais">
+        <button class="tab" role="tab" data-view="jogos" aria-selected="true">🎮 Jogos</button>
+        <button class="tab" role="tab" data-view="classificacao" aria-selected="false">📊 Classificação</button>
+        <button class="tab" role="tab" data-view="ia" aria-selected="false">🤖 Assistente IA</button>
+        <button class="tab" role="tab" data-view="adm" aria-selected="false">🔒 ADM</button>
+      </div>
+    </header>
+
+    <main id="content"></main>
+  </div>
+
+  <script>
+    /* =========================================================
+      1) DADOS DO CAMPEONATO (você pode editar os nomes à vontade)
+      - Fase de grupos MD3 (gols por jogo)
+      - Vitória da série (MD3) = 3 pts
+      - Desempate: PTS, SG, GF
+    ========================================================= */
+
+    const TEAMS = {
+      // Grupo A
+      tog: { name:"TOG" },
+      skyelite: { name:"Sky Elite" },
+      parkclub: { name:"park club" },
+      hawks: { name:"Hawks" },
+
+      // Grupo B
+      fury: { name:"The Fury Foxes" },
+      tropopcorn: { name:"Tropopcorn" },
+      imperial: { name:"Imperial Strikers" },
+      darkskull: { name:"Dark Skull" },
+
+      // Grupo C
+      angels: { name:"angels rl" },
+      vst: { name:"Vst" },
+      trapaceiros: { name:"Trapaceiros FC" },
+      stage7: { name:"Stage7" },
+
+      // Grupo D
+      elementais: { name:"Elementais" },
+      deportivo: { name:"Deportivo WW" },
+      lemon: { name:"Lemon - e sports" },
+      logsevenb: { name:"Logseven B" },
+
+      // Grupo E
+      sapos: { name:"saposGamers" },
+      legends: { name:"The Legends" },
+      alvinegros: { name:"Alvinegros RL" },
+      gladiators: { name:"Gladiators rl" },
+
+      // Grupo F
+      supernova: { name:"SuperNovaRl" },
+      dragon: { name:"Dragon" },
+      nightfall: { name:"Nightfall esports" },
+      nytrix: { name:"Nytrix" },
+
+      // Grupo G
+      forestcrows: { name:"Forest Crows" },
+      prodigio: { name:"Prodígio" },
+      grandseven: { name:"grand seven7" },
+      attacs: { name:"Attacs" },
+
+      // Grupo H
+      sekikana: { name:"Se kikana" },
+      logseven: { name:"logseven" },
+      cyclone: { name:"Cyclone" },
+      hush: { name:"Hush B/Cyclone" },
+    };
+
+    const GROUPS = {
+      A: ["tog","skyelite","parkclub","hawks"],
+      B: ["fury","tropopcorn","imperial","darkskull"],
+      C: ["angels","vst","trapaceiros","stage7"],
+      D: ["elementais","deportivo","lemon","logsevenb"],
+      E: ["sapos","legends","alvinegros","gladiators"],
+      F: ["supernova","dragon","nightfall","nytrix"],
+      G: ["forestcrows","prodigio","grandseven","attacs"],
+      H: ["sekikana","logseven","cyclone","hush"],
+    };
+
+    // Calendário por DIA (cada dia tem grupos e confrontos)
+    const SCHEDULE = [
+      { key:"r1_27", date:"27/02", title:"Rodada 1 — 27/02", groups:{
+        A: [["parkclub","hawks"], ["tog","skyelite"]],
+        B: [["tropopcorn","imperial"], ["darkskull","fury"]],
+      }},
+      { key:"r1_28", date:"28/02", title:"Rodada 1 — 28/02", groups:{
+        C: [["angels","trapaceiros"], ["stage7","vst"]],
+        D: [["elementais","lemon"], ["deportivo","logsevenb"]],
+      }},
+      { key:"r1_01", date:"01/03", title:"Rodada 1 — 01/03", groups:{
+        E: [["sapos","alvinegros"], ["gladiators","legends"]],
+        F: [["dragon","nightfall"], ["nytrix","supernova"]],
+      }},
+      { key:"r1_02", date:"02/03", title:"Rodada 1 — 02/03", groups:{
+        G: [["attacs","grandseven"], ["forestcrows","prodigio"]],
+        H: [["hush","cyclone"], ["logseven","sekikana"]],
+      }},
+
+      { key:"r2_03", date:"03/03", title:"Rodada 2 — 03/03", groups:{
+        A: [["hawks","skyelite"], ["parkclub","tog"]],
+        B: [["imperial","fury"], ["tropopcorn","darkskull"]],
+      }},
+      { key:"r2_04", date:"04/03", title:"Rodada 2 — 04/03", groups:{
+        C: [["trapaceiros","vst"], ["angels","stage7"]],
+        D: [["lemon","logsevenb"], ["elementais","deportivo"]],
+      }},
+      { key:"r2_05", date:"05/03", title:"Rodada 2 — 05/03", groups:{
+        E: [["alvinegros","legends"], ["sapos","gladiators"]],
+        F: [["nightfall","supernova"], ["dragon","nytrix"]],
+      }},
+      { key:"r2_06", date:"06/03", title:"Rodada 2 — 06/03", groups:{
+        G: [["grandseven","prodigio"], ["attacs","forestcrows"]],
+        H: [["cyclone","sekikana"], ["hush","logseven"]],
+      }},
+
+      { key:"r3_07", date:"07/03", title:"Rodada 3 — 07/03", groups:{
+        A: [["hawks","tog"], ["skyelite","parkclub"]],
+        B: [["imperial","darkskull"], ["fury","tropopcorn"]],
+      }},
+      { key:"r3_08", date:"08/03", title:"Rodada 3 — 08/03", groups:{
+        C: [["trapaceiros","stage7"], ["vst","angels"]],
+        D: [["lemon","deportivo"], ["logsevenb","elementais"]],
+      }},
+      { key:"r3_09", date:"09/03", title:"Rodada 3 — 09/03", groups:{
+        E: [["alvinegros","gladiators"], ["legends","sapos"]],
+        F: [["nightfall","nytrix"], ["supernova","dragon"]],
+      }},
+      { key:"r3_10", date:"10/03", title:"Rodada 3 — 10/03", groups:{
+        G: [["grandseven","forestcrows"], ["prodigio","attacs"]],
+        H: [["cyclone","logseven"], ["sekikana","hush"]],
+      }},
+    ];
+
+    const GROUP_KEYS = Object.keys(GROUPS);
+
+    /* =========================================================
+      2) ADM (login local, sem servidor)
+         - Só admin pode editar placar
+    ========================================================= */
+
+    const ADMIN_CREDENTIALS = [
+      { user:"pietro", pass:"12345" },
+      { user:"Davi", pass:"12345" },
+    ];
+
+    const STORAGE_KEY = "recnators_scores_md3_v1";
+    const SESSION_KEY = "recnators_admin_session_v1";
+    const VIEW_KEY = "recnators_view_v1";
+    const UI_KEY = "recnators_ui_v1"; // group/day selecionados
+
+    function loadJSON(key, fallback){
+      try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+      catch{ return fallback; }
+    }
+    function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+
+    // state[matchId] = [{a:"",b:""},{a:"",b:""},{a:"",b:""}]
+    let state = loadJSON(STORAGE_KEY, {});
+    let session = loadJSON(SESSION_KEY, null); // {user:"pietro"}
+    let currentView = loadJSON(VIEW_KEY, "jogos");
+    let ui = loadJSON(UI_KEY, { group:"A", dayKeyForGroup:{} });
+
+    const content = document.getElementById("content");
+    const tabs = Array.from(document.querySelectorAll(".tab"));
+
+    function isAdmin(){
+      if(!session || !session.user) return false;
+      return ADMIN_CREDENTIALS.some(x => x.user === session.user);
+    }
+
+    function setSession(user){
+      session = { user };
+      saveJSON(SESSION_KEY, session);
+      updateAdminPill();
+    }
+    function clearSession(){
+      session = null;
+      localStorage.removeItem(SESSION_KEY);
+      updateAdminPill();
+    }
+
+    function updateAdminPill(){
+      const pill = document.getElementById("adminPill");
+      const dot = document.getElementById("adminDot");
+      const txt = document.getElementById("adminText");
+
+      if(isAdmin()){
+        dot.classList.remove("off"); dot.classList.add("ok");
+        txt.innerHTML = `ADM logado: <b>${escapeHtml(session.user)}</b> (edição liberada)`;
+        pill.style.borderColor = "rgba(34,197,94,.35)";
+        pill.style.background = "rgba(34,197,94,.10)";
+      }else{
+        dot.classList.remove("ok"); dot.classList.add("off");
+        txt.textContent = "Modo público (sem edição)";
+        pill.style.borderColor = "rgba(255,255,255,.12)";
+        pill.style.background = "rgba(0,0,0,.20)";
+      }
+    }
+
+    /* =========================================================
+      3) Helpers (MD3 / tabela)
+    ========================================================= */
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[m]));
+    }
+
+    function badgeText(teamId){
+      const name = (TEAMS[teamId]?.name || teamId).trim();
+      const parts = name.split(/\s+/).filter(Boolean);
+      let out = "";
+      for(const p of parts){
+        const c = p[0];
+        if(c && /[A-Za-z0-9]/.test(c)) out += c.toUpperCase();
+        if(out.length>=3) break;
+      }
+      return out || "RL";
+    }
+
+    function makeMatchId(dayKey, groupKey, aId, bId){
+      return `${dayKey}__${groupKey}__${aId}__vs__${bId}`;
+    }
+
+    function getSeries(matchId){
+      return state[matchId] || [{a:"",b:""},{a:"",b:""},{a:"",b:""}];
+    }
+
+    function setGame(matchId, gameIndex, aVal, bVal){
+      const s = JSON.parse(JSON.stringify(getSeries(matchId)));
+      s[gameIndex] = {a:aVal, b:bVal};
+      state[matchId] = s;
+      saveJSON(STORAGE_KEY, state);
+    }
+
+    function sanitizeScore(v){
+      if(v === "" || v === null || v === undefined) return "";
+      const n = parseInt(v,10);
+      if(!Number.isFinite(n)) return "";
+      if(n < 0) return "0";
+      if(n > 20) return "20";
+      return String(n);
+    }
+
+    function gameWinner(a,b){
+      if(!Number.isFinite(a) || !Number.isFinite(b)) return null;
+      if(a>b) return "A";
+      if(b>a) return "B";
+      return null;
+    }
+
+    // MD3 por gols: cada jogo dá 1 vitória (quem fez mais gols no jogo)
+    function seriesInfo(series3){
+      let wA=0, wB=0, gfA=0, gfB=0;
+
+      for(const g of series3){
+        const a = (g.a==="" ? null : parseInt(g.a,10));
+        const b = (g.b==="" ? null : parseInt(g.b,10));
+        if(Number.isFinite(a)) gfA += a;
+        if(Number.isFinite(b)) gfB += b;
+
+        const win = gameWinner(a,b);
+        if(win==="A") wA++;
+        if(win==="B") wB++;
+      }
+
+      // lock J3 se J1+J2 já fechou 2–0
+      const j1 = series3[0], j2 = series3[1];
+      const a1 = (j1.a===""?null:parseInt(j1.a,10)), b1=(j1.b===""?null:parseInt(j1.b,10));
+      const a2 = (j2.a===""?null:parseInt(j2.a,10)), b2=(j2.b===""?null:parseInt(j2.b,10));
+      let wA2=0, wB2=0;
+      if(gameWinner(a1,b1)==="A") wA2++; else if(gameWinner(a1,b1)==="B") wB2++;
+      if(gameWinner(a2,b2)==="A") wA2++; else if(gameWinner(a2,b2)==="B") wB2++;
+      const lockJ3 = (wA2>=2 || wB2>=2);
+
+      const decided = (wA>=2 || wB>=2);
+      const winner = wA>=2 ? "A" : (wB>=2 ? "B" : null);
+
+      return {wA,wB,decided,winner,lockJ3,gfA,gfB};
+    }
+
+    function allMatchesOfGroup(groupKey){
+      const list = [];
+      for(const d of SCHEDULE){
+        const g = d.groups[groupKey];
+        if(!g) continue;
+        for(const [aId,bId] of g){
+          const matchId = makeMatchId(d.key, groupKey, aId, bId);
+          list.push({dayKey:d.key, date:d.date, title:d.title, groupKey, aId, bId, matchId});
+        }
+      }
+      return list;
+    }
+
+    function computeGroupTable(groupKey){
+      const teams = GROUPS[groupKey];
+      const st = {};
+      for(const t of teams) st[t] = {pts:0,v:0,d:0,gf:0,ga:0,sg:0};
+
+      const matches = allMatchesOfGroup(groupKey);
+      for(const m of matches){
+        const info = seriesInfo(getSeries(m.matchId));
+        st[m.aId].gf += info.gfA; st[m.aId].ga += info.gfB;
+        st[m.bId].gf += info.gfB; st[m.bId].ga += info.gfA;
+
+        if(info.decided){
+          if(info.winner==="A"){
+            st[m.aId].pts += 3; st[m.aId].v += 1; st[m.bId].d += 1;
+          }else if(info.winner==="B"){
+            st[m.bId].pts += 3; st[m.bId].v += 1; st[m.aId].d += 1;
+          }
+        }
+      }
+
+      for(const t of teams) st[t].sg = st[t].gf - st[t].ga;
+
+      const rows = teams.map(t=>({teamId:t, ...st[t]}));
+      rows.sort((A,B)=>{
+        if(B.pts !== A.pts) return B.pts - A.pts;
+        if(B.sg  !== A.sg ) return B.sg  - A.sg;
+        if(B.gf  !== A.gf ) return B.gf  - A.gf;
+        return (TEAMS[A.teamId].name).localeCompare(TEAMS[B.teamId].name, "pt-BR");
+      });
+      return rows;
+    }
+
+    function computeAllTables(){
+      const map = {};
+      for(const g of GROUP_KEYS) map[g] = computeGroupTable(g);
+      return map;
+    }
+
+    function countDecidedSeries(){
+      let decided = 0;
+      for(const d of SCHEDULE){
+        for(const gKey of Object.keys(d.groups)){
+          for(const [a,b] of d.groups[gKey]){
+            const id = makeMatchId(d.key, gKey, a, b);
+            if(seriesInfo(getSeries(id)).decided) decided++;
+          }
+        }
+      }
+      return decided;
+    }
+    function totalSeries(){
+      // cada grupo 6 séries
+      return GROUP_KEYS.length * 6;
+    }
+    function totalGoals(){
+      let goals = 0;
+      for(const d of SCHEDULE){
+        for(const gKey of Object.keys(d.groups)){
+          for(const [a,b] of d.groups[gKey]){
+            const id = makeMatchId(d.key, gKey, a, b);
+            const info = seriesInfo(getSeries(id));
+            goals += info.gfA + info.gfB;
+          }
+        }
+      }
+      return goals;
+    }
+
+    /* =========================================================
+      4) UI: render principal
+    ========================================================= */
+
+    function setActiveTab(view){
+      currentView = view;
+      saveJSON(VIEW_KEY, view);
+      tabs.forEach(t=>{
+        const active = (t.dataset.view === view);
+        t.setAttribute("aria-selected", active ? "true" : "false");
+      });
+    }
+
+    tabs.forEach(t=>{
+      t.addEventListener("click", ()=>{
+        setActiveTab(t.dataset.view);
+        render(false);
+      });
+    });
+
+    function render(keepScroll=true){
+      const saved = keepScroll ? window.scrollY : null;
+
+      if(currentView === "jogos") renderJogos();
+      else if(currentView === "classificacao") renderClassificacao();
+      else if(currentView === "ia") renderIA();
+      else renderADM();
+
+      if(saved !== null) window.scrollTo({top:saved, behavior:"auto"});
+      updateAdminPill();
+    }
+
+    /* =========================================================
+      4.1) ABA: JOGOS
+      - subtabs: grupos
+      - dentro: day tabs (somente dias do grupo)
+      - placar editável apenas se admin
+    ========================================================= */
+
+    function renderJogos(){
+      content.innerHTML = "";
+
+      const decided = countDecidedSeries();
+      const tot = totalSeries();
+      const pct = Math.round((decided / tot) * 100);
+
+      const kpiCard = document.createElement("section");
+      kpiCard.className = "card";
+      kpiCard.innerHTML = `
+        <div class="cardHead">
+          <h2>🎮 Jogos</h2>
+          <span class="hint">Grupo → Dia • MD3 por gols • Só ADM edita</span>
+        </div>
+        <div class="section">
+          <div class="kpis">
+            <div class="kpi"><div class="n">${decided}/${tot}</div><div class="l">Séries decididas</div></div>
+            <div class="kpi"><div class="n">${pct}%</div><div class="l">Progresso</div></div>
+            <div class="kpi"><div class="n">${totalGoals()}</div><div class="l">Gols digitados</div></div>
+            <div class="kpi"><div class="n">${isAdmin() ? "ADM" : "Público"}</div><div class="l">Permissão</div></div>
+          </div>
+          <div class="note" style="margin-top:10px">
+            ✅ Se J1 e J2 fecharem <b>2–0</b>, o <b>J3 bloqueia</b> automaticamente.
+          </div>
+        </div>
+      `;
+      content.appendChild(kpiCard);
+
+      const card = document.createElement("section");
+      card.className = "card";
+
+      // group subtabs
+      const subtabs = document.createElement("div");
+      subtabs.className = "subtabs";
+      GROUP_KEYS.forEach(g=>{
+        const b = document.createElement("button");
+        b.className = "subtab";
+        b.textContent = `Grupo ${g}`;
+        b.setAttribute("aria-selected", ui.group === g ? "true" : "false");
+        b.addEventListener("click", ()=>{
+          ui.group = g;
+          saveJSON(UI_KEY, ui);
+          render(false);
+        });
+        subtabs.appendChild(b);
+      });
+
+      card.appendChild(subtabs);
+
+      // days tabs for group
+      const days = SCHEDULE.filter(d => d.groups[ui.group]);
+      if(!ui.dayKeyForGroup) ui.dayKeyForGroup = {};
+      if(!ui.dayKeyForGroup[ui.group] || !days.some(d=>d.key === ui.dayKeyForGroup[ui.group])){
+        ui.dayKeyForGroup[ui.group] = days[0]?.key || null;
+        saveJSON(UI_KEY, ui);
+      }
+
+      const dayTabs = document.createElement("div");
+      dayTabs.className = "dayTabs";
+      days.forEach(d=>{
+        const b = document.createElement("button");
+        b.className = "daytab";
+        b.textContent = d.date;
+        b.title = d.title;
+        b.setAttribute("aria-selected", ui.dayKeyForGroup[ui.group] === d.key ? "true" : "false");
+        b.addEventListener("click", ()=>{
+          ui.dayKeyForGroup[ui.group] = d.key;
+          saveJSON(UI_KEY, ui);
+          render(false);
+        });
+        dayTabs.appendChild(b);
+      });
+      card.appendChild(dayTabs);
+
+      // matches of selected day for selected group
+      const selectedDay = days.find(d => d.key === ui.dayKeyForGroup[ui.group]) || days[0];
+      const matchesWrap = document.createElement("div");
+      matchesWrap.className = "matches";
+
+      const head = document.createElement("div");
+      head.className = "section";
+      head.innerHTML = `
+        <div class="toast">
+          <b>${escapeHtml(selectedDay?.title || "")}</b> • ${escapeHtml(selectedDay?.date || "")} • <b>Grupo ${escapeHtml(ui.group)}</b>
+          <br>
+          ${isAdmin() ? "✅ Você está logado como ADM: pode editar os placares." : "🔒 Público: você só pode visualizar (para editar, entre na aba ADM)."}
+        </div>
+      `;
+      card.appendChild(head);
+
+      (selectedDay?.groups?.[ui.group] || []).forEach((pair, idx)=>{
+        matchesWrap.appendChild(buildMatchCard(selectedDay.key, ui.group, pair[0], pair[1], idx));
+      });
+
+      card.appendChild(matchesWrap);
+      content.appendChild(card);
+    }
+
+    function buildMatchCard(dayKey, groupKey, aId, bId, idx){
+      const matchId = makeMatchId(dayKey, groupKey, aId, bId);
+      const series = getSeries(matchId);
+      const info = seriesInfo(series);
+
+      const wrap = document.createElement("div");
+      wrap.className = "match";
+
+      const top = document.createElement("div");
+      top.className = "matchTop";
+
+      const left = document.createElement("div");
+      left.textContent = `Confronto ${idx+1}`;
+
+      const pill = document.createElement("div");
+      pill.className = "pill";
+      pill.textContent = `Série: ${info.wA}–${info.wB}`;
+      if(info.decided) pill.classList.add("good");
+
+      top.appendChild(left);
+      top.appendChild(pill);
+
+      const rowTeams = document.createElement("div");
+      rowTeams.className = "rowTeams";
+
+      const sideA = document.createElement("div");
+      sideA.className = "side";
+      sideA.innerHTML = `
+        <div class="badge">${escapeHtml(badgeText(aId))}</div>
+        <div class="name" title="${escapeHtml(TEAMS[aId].name)}">${escapeHtml(TEAMS[aId].name)}</div>
+      `;
+
+      const vs = document.createElement("div");
+      vs.className = "vs";
+      vs.textContent = "x";
+
+      const sideB = document.createElement("div");
+      sideB.className = "side right";
+      sideB.innerHTML = `
+        <div class="name" title="${escapeHtml(TEAMS[bId].name)}">${escapeHtml(TEAMS[bId].name)}</div>
+        <div class="badge">${escapeHtml(badgeText(bId))}</div>
+      `;
+
+      rowTeams.appendChild(sideA);
+      rowTeams.appendChild(vs);
+      rowTeams.appendChild(sideB);
+
+      const games = document.createElement("div");
+      games.className = "games";
+
+      const note = document.createElement("div");
+      note.className = "note";
+      note.innerHTML = info.lockJ3
+        ? "✅ <b>J3 bloqueado</b> (já deu 2–0 nos dois primeiros jogos)."
+        : "MD3 por gols: preencha J1/J2/J3. A classificação atualiza automaticamente.";
+
+      function applyLock(inf){
+        const a3 = wrap.querySelector(`#in_${matchId}_2_a`);
+        const b3 = wrap.querySelector(`#in_${matchId}_2_b`);
+        if(!a3 || !b3) return;
+
+        if(inf.lockJ3){
+          a3.value = ""; b3.value = "";
+          a3.disabled = true; b3.disabled = true;
+          setGame(matchId, 2, "", "");
+        }else{
+          a3.disabled = !isAdmin();
+          b3.disabled = !isAdmin();
+        }
+      }
+
+      function updatePill(inf){
+        pill.textContent = `Série: ${inf.wA}–${inf.wB}`;
+        pill.classList.toggle("good", !!inf.decided);
+        note.innerHTML = inf.lockJ3
+          ? "✅ <b>J3 bloqueado</b> (já deu 2–0 nos dois primeiros jogos)."
+          : "MD3 por gols: preencha J1/J2/J3. A classificação atualiza automaticamente.";
+      }
+
+      for(let i=0;i<3;i++){
+        const row = document.createElement("div");
+        row.className = "gameRow";
+
+        const gl = document.createElement("div");
+        gl.className = "glabel";
+        gl.textContent = `J${i+1}`;
+
+        const inA = document.createElement("input");
+        inA.className = "score";
+        inA.type = "number";
+        inA.min = "0"; inA.max = "20";
+        inA.placeholder = "—";
+        inA.id = `in_${matchId}_${i}_a`;
+        inA.value = (series[i]?.a ?? "");
+        inA.disabled = !isAdmin();
+
+        const mid = document.createElement("div");
+        mid.style.textAlign = "center";
+        mid.style.fontWeight = "1100";
+        mid.style.opacity = ".85";
+        mid.textContent = "x";
+
+        const inB = document.createElement("input");
+        inB.className = "score";
+        inB.type = "number";
+        inB.min = "0"; inB.max = "20";
+        inB.placeholder = "—";
+        inB.id = `in_${matchId}_${i}_b`;
+        inB.value = (series[i]?.b ?? "");
+        inB.disabled = !isAdmin();
+
+        const onInput = ()=>{
+          // segurança: se não for admin, ignora
+          if(!isAdmin()) return;
+
+          inA.value = sanitizeScore(inA.value);
+          inB.value = sanitizeScore(inB.value);
+
+          setGame(matchId, i, inA.value, inB.value);
+
+          const inf2 = seriesInfo(getSeries(matchId));
+          applyLock(inf2);
+          updatePill(inf2);
+
+          // atualiza tudo
+          render(false);
+        };
+
+        inA.addEventListener("input", onInput);
+        inB.addEventListener("input", onInput);
+
+        row.appendChild(gl);
+        row.appendChild(inA);
+        row.appendChild(mid);
+        row.appendChild(inB);
+        games.appendChild(row);
+      }
+
+      wrap.appendChild(top);
+      wrap.appendChild(rowTeams);
+      wrap.appendChild(games);
+      wrap.appendChild(note);
+
+      applyLock(info);
+      return wrap;
+    }
+
+    /* =========================================================
+      4.2) ABA: CLASSIFICAÇÃO (separada por grupos)
+    ========================================================= */
+
+    function renderClassificacao(){
+      content.innerHTML = "";
+
+      const head = document.createElement("section");
+      head.className = "card";
+      head.innerHTML = `
+        <div class="cardHead">
+          <h2>📊 Classificação</h2>
+          <span class="hint">Desempate: PTS → SG → GF</span>
+        </div>
+        <div class="section">
+          <div class="note">
+            Vitória da série (MD3) = <b>3 pontos</b>. SG e GF somam todos os gols digitados.
+          </div>
+        </div>
+      `;
+      content.appendChild(head);
+
+      const grid = document.createElement("div");
+      grid.className = "tablesGrid";
+      content.appendChild(grid);
+
+      GROUP_KEYS.forEach(gKey=>{
+        const card = document.createElement("section");
+        card.className = "card";
+
+        const ch = document.createElement("div");
+        ch.className = "cardHead";
+        ch.innerHTML = `<h2>🏆 Grupo ${escapeHtml(gKey)}</h2><span class="hint">Top 2 em verde</span>`;
+        card.appendChild(ch);
+
+        const sec = document.createElement("div");
+        sec.className = "section";
+        const wrap = document.createElement("div");
+        wrap.style.overflow = "auto";
+
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th style="width:38px"></th>
+              <th style="width:44px">#</th>
+              <th>Time</th>
+              <th>PTS</th><th>V</th><th>D</th>
+              <th>GF</th><th>GA</th><th>SG</th>
+            </tr>
+          </thead>
+          <tbody id="tb_${gKey}"></tbody>
+        `;
+        wrap.appendChild(table);
+        sec.appendChild(wrap);
+        card.appendChild(sec);
+        grid.appendChild(card);
+
+        renderGroupTableInto(gKey, document.getElementById(`tb_${gKey}`));
+      });
+    }
+
+    function renderGroupTableInto(groupKey, tbodyEl){
+      const rows = computeGroupTable(groupKey);
+      tbodyEl.innerHTML = "";
+
+      rows.forEach((r, idx)=>{
+        const rank = idx + 1;
+        const tr = document.createElement("tr");
+        if(rank<=2) tr.classList.add("rowGood");
+        if(rank>=3) tr.classList.add("rowBad");
+
+        const tdBar = document.createElement("td");
+        const bar = document.createElement("div");
+        bar.className = "rankBar";
+        tdBar.appendChild(bar);
+
+        const tdRank = document.createElement("td");
+        tdRank.textContent = String(rank);
+
+        const tdTeam = document.createElement("td");
+        const teamWrap = document.createElement("div");
+        teamWrap.className = "tdTeam";
+        const mb = document.createElement("div");
+        mb.className = "miniBadge";
+        mb.textContent = badgeText(r.teamId);
+        const nm = document.createElement("span");
+        nm.style.fontWeight = "1100";
+        nm.style.overflow = "hidden";
+        nm.style.textOverflow = "ellipsis";
+        nm.style.whiteSpace = "nowrap";
+        nm.textContent = TEAMS[r.teamId].name;
+        teamWrap.appendChild(mb);
+        teamWrap.appendChild(nm);
+        tdTeam.appendChild(teamWrap);
+
+        const tdPts = document.createElement("td"); tdPts.textContent = r.pts;
+        const tdV = document.createElement("td"); tdV.textContent = r.v;
+        const tdD = document.createElement("td"); tdD.textContent = r.d;
+        const tdGF = document.createElement("td"); tdGF.textContent = r.gf;
+        const tdGA = document.createElement("td"); tdGA.textContent = r.ga;
+        const tdSG = document.createElement("td"); tdSG.textContent = r.sg;
+
+        tr.appendChild(tdBar);
+        tr.appendChild(tdRank);
+        tr.appendChild(tdTeam);
+        tr.appendChild(tdPts);
+        tr.appendChild(tdV);
+        tr.appendChild(tdD);
+        tr.appendChild(tdGF);
+        tr.appendChild(tdGA);
+        tr.appendChild(tdSG);
+
+        tbodyEl.appendChild(tr);
+      });
+    }
+
+    /* =========================================================
+      4.3) ABA: ASSISTENTE IA (offline, baseado nos dados do site)
+    ========================================================= */
+
+    let iaMounted = false;
+
+    function renderIA(){
+      content.innerHTML = "";
+
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="cardHead">
+          <h2>🤖 Assistente IA do Campeonato</h2>
+          <span class="hint">Pergunte qualquer coisa do torneio</span>
+        </div>
+        <div class="section">
+          <div class="note">
+            Exemplos: <b>"tabela do grupo A"</b>, <b>"jogos 27/02"</b>, <b>"próximo jogo do TOG"</b>, <b>"quem passa no grupo B"</b>, <b>"regras"</b>.
+          </div>
+        </div>
+      `;
+      content.appendChild(card);
+
+      const chatCard = document.createElement("section");
+      chatCard.className = "card";
+      chatCard.innerHTML = `
+        <div class="section chatWrap">
+          <div class="chatBox">
+            <div class="chatHead">
+              <div>IA Recnators</div>
+              <button class="btn" id="btnClearChat">Limpar chat</button>
+            </div>
+            <div class="chatBody" id="chatBody"></div>
+            <div class="chatInput">
+              <input id="chatMsg" placeholder="Digite sua pergunta..." autocomplete="off" />
+              <button id="chatSend">Enviar</button>
+            </div>
+          </div>
+        </div>
+      `;
+      content.appendChild(chatCard);
+
+      mountIA();
+    }
+
+    function normalize(s){
+      return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function findTeamIdByName(q){
+      const nq = normalize(q);
+      let best = null;
+      for(const [id, obj] of Object.entries(TEAMS)){
+        const n = normalize(obj.name);
+        if(n === nq) return id;
+        if(n.includes(nq) || nq.includes(n)) best = id;
+      }
+      return best;
+    }
+
+    function scheduleForDate(dateStr){
+      return SCHEDULE.find(x=>x.date === dateStr) || null;
+    }
+
+    function tableTextForGroup(gKey){
+      const rows = computeGroupTable(gKey);
+      let out = `<b>📊 Tabela do Grupo ${escapeHtml(gKey)}</b><br>`;
+      rows.forEach((r,i)=>{
+        out += `${i+1}. ${escapeHtml(TEAMS[r.teamId].name)} — <b>${r.pts} pts</b> (SG ${r.sg}, GF ${r.gf})<br>`;
+      });
+      return out;
+    }
+
+    function nextMatchesForTeam(teamId){
+      const res = [];
+      for(const d of SCHEDULE){
+        for(const gKey of Object.keys(d.groups)){
+          for(const [a,b] of d.groups[gKey]){
+            if(a !== teamId && b !== teamId) continue;
+            const id = makeMatchId(d.key, gKey, a, b);
+            const inf = seriesInfo(getSeries(id));
+            if(!inf.decided){
+              res.push({date:d.date, gKey, a, b});
+            }
+          }
+        }
+      }
+      return res;
+    }
+
+    function aiAnswer(qRaw){
+      const q = normalize(qRaw);
+
+      if(q.includes("regras") || q.includes("regra") || q.includes("md3")){
+        return `
+          <b>📜 Regras</b><br>
+          • Fase de grupos: <b>MD3</b> (gols por jogo).<br>
+          • Se J1+J2 fechar <b>2–0</b>, o <b>J3 bloqueia</b>.<br>
+          • Vitória da série = <b>3 pts</b>.<br>
+          • Desempate: <b>PTS</b> → <b>SG</b> → <b>GF</b>.
+        `;
+      }
+
+      // Tabela do grupo X
+      const mGroup = q.match(/grupo\s*([a-h])/);
+      if(q.includes("tabela") && mGroup){
+        const g = mGroup[1].toUpperCase();
+        if(GROUPS[g]) return tableTextForGroup(g);
+        return "Não achei esse grupo.";
+      }
+
+      // "quem passa no grupo B"
+      if((q.includes("passa") || q.includes("classifica")) && mGroup){
+        const g = mGroup[1].toUpperCase();
+        const rows = computeGroupTable(g);
+        if(rows.length < 2) return "Grupo vazio.";
+        return `✅ <b>Classificariam agora no Grupo ${escapeHtml(g)}:</b><br>1) ${escapeHtml(TEAMS[rows[0].teamId].name)}<br>2) ${escapeHtml(TEAMS[rows[1].teamId].name)}`;
+      }
+
+      // Jogos por data: "jogos 27/02"
+      const mDate = q.match(/(\d{2}\/\d{2})/);
+      if(q.includes("jogo") || q.includes("jogos") || q.includes("rodada") || q.includes("dia")){
+        if(mDate){
+          const d = scheduleForDate(mDate[1]);
+          if(!d) return `Não achei jogos para ${escapeHtml(mDate[1])}.`;
+          let out = `<b>📅 Jogos ${escapeHtml(d.date)}</b><br><span style="color:rgba(232,238,252,.92)">${escapeHtml(d.title)}</span><br><br>`;
+          for(const gKey of Object.keys(d.groups)){
+            out += `<b>🏆 Grupo ${escapeHtml(gKey)}</b><br>`;
+            for(const [a,b] of d.groups[gKey]){
+              const id = makeMatchId(d.key, gKey, a, b);
+              const inf = seriesInfo(getSeries(id));
+              out += `• ${escapeHtml(TEAMS[a].name)} x ${escapeHtml(TEAMS[b].name)} <span style="color:rgba(169,180,208,.95)">(série ${inf.wA}-${inf.wB})</span><br>`;
+            }
+            out += "<br>";
+          }
+          return out;
+        }
+      }
+
+      // Próximo jogo do time
+      if(q.includes("proximo") || q.includes("próximo")){
+        const cleaned = qRaw.replace(/proximo|próximo|proxima|próxima|jogo|do|da|de|time/gi," ").trim();
+        const team = findTeamIdByName(cleaned);
+        if(team){
+          const list = nextMatchesForTeam(team);
+          if(list.length === 0){
+            return `✅ ${escapeHtml(TEAMS[team].name)} não tem mais jogos em aberto (ou já decidiu todos).`;
+          }
+          let out = `<b>⏭️ Próximos jogos em aberto — ${escapeHtml(TEAMS[team].name)}</b><br>`;
+          list.slice(0,6).forEach(x=>{
+            const opp = (x.a===team) ? x.b : x.a;
+            out += `• ${escapeHtml(x.date)} — Grupo ${escapeHtml(x.gKey)}: ${escapeHtml(TEAMS[team].name)} x ${escapeHtml(TEAMS[opp].name)}<br>`;
+          });
+          return out;
+        }
+      }
+
+      // fallback: se citar um time, mostra situação
+      const maybeTeam = findTeamIdByName(qRaw);
+      if(maybeTeam){
+        const groupKey = GROUP_KEYS.find(g=>GROUPS[g].includes(maybeTeam));
+        if(groupKey){
+          const rows = computeGroupTable(groupKey);
+          const pos = rows.findIndex(r=>r.teamId===maybeTeam) + 1;
+          const r = rows.find(x=>x.teamId===maybeTeam);
+          return `
+            <b>📌 ${escapeHtml(TEAMS[maybeTeam].name)}</b><br>
+            Grupo: <b>${escapeHtml(groupKey)}</b><br>
+            Posição: <b>${pos || "—"}</b><br>
+            PTS: <b>${r?.pts ?? 0}</b> • SG: <b>${r?.sg ?? 0}</b> • GF: <b>${r?.gf ?? 0}</b>
+          `;
+        }
+      }
+
+      return `
+        Não peguei 😅<br>
+        Tenta assim:<br>
+        • “tabela do grupo A”<br>
+        • “jogos 27/02”<br>
+        • “próximo jogo do TOG”<br>
+        • “quem passa no grupo B”<br>
+        • “regras”
+      `;
+    }
+
+    function mountIA(){
+      const body = document.getElementById("chatBody");
+      const msg = document.getElementById("chatMsg");
+      const send = document.getElementById("chatSend");
+      const clear = document.getElementById("btnClearChat");
+
+      if(!body || !msg || !send || !clear) return;
+
+      // evita duplicar listeners
+      if(iaMounted) return;
+      iaMounted = true;
+
+      function push(text, who){
+        const b = document.createElement("div");
+        b.className = "bubble " + who;
+        b.innerHTML = text;
+        body.appendChild(b);
+        body.scrollTop = body.scrollHeight;
+      }
+
+      function sendMsg(){
+        const q = msg.value.trim();
+        if(!q) return;
+        push(`<b>Você:</b> ${escapeHtml(q)}`, "me");
+        const ans = aiAnswer(q);
+        push(`<b>IA:</b> ${ans}`, "bot");
+        msg.value = "";
+        msg.focus();
+      }
+
+      send.addEventListener("click", sendMsg);
+      msg.addEventListener("keydown", (e)=>{ if(e.key==="Enter") sendMsg(); });
+
+      clear.addEventListener("click", ()=>{
+        body.innerHTML = "";
+        push(`<b>IA:</b> Oi! Pergunte qualquer coisa do campeonato 😄`, "bot");
+      });
+
+      // mensagem inicial
+      push(`<b>IA:</b> Oi! Pergunte: “tabela do grupo A”, “jogos 27/02”, “próximo jogo do TOG”…`, "bot");
+    }
+
+    /* =========================================================
+      4.4) ABA: ADM
+      - Login/logout
+      - Só admins editam placares
+    ========================================================= */
+
+    function renderADM(){
+      content.innerHTML = "";
+
+      const card = document.createElement("section");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="cardHead">
+          <h2>🔒 ADM</h2>
+          <span class="hint">Somente admins podem editar os resultados</span>
+        </div>
+        <div class="section">
+          <div class="toast" id="admToast"></div>
+        </div>
+      `;
+      content.appendChild(card);
+
+      const box = document.createElement("section");
+      box.className = "card";
+
+      const sec = document.createElement("div");
+      sec.className = "section";
+
+      if(isAdmin()){
+        sec.innerHTML = `
+          <div class="formGrid">
+            <div class="toast">
+              ✅ Você está logado como <b>${escapeHtml(session.user)}</b>.<br>
+              Agora você pode editar placares na aba <b>Jogos</b>.
+            </div>
+
+            <button class="btn danger" id="btnLogout">Sair do ADM</button>
+
+            <div class="note">
+              ⚠️ Dica: se você quer “zerar tudo”, use o botão <b>Reset geral</b> no topo.
+            </div>
+          </div>
+        `;
+      }else{
+        sec.innerHTML = `
+          <div class="formGrid">
+            <div class="toast">
+              🔒 Para editar placares, faça login de admin.
+              <br><span style="color:rgba(169,180,208,.95)">Ex.: pietro / 12345</span>
+            </div>
+
+            <div class="field">
+              <div class="label">Username</div>
+              <input class="input" id="admUser" placeholder="ex: pietro" autocomplete="username">
+            </div>
+            <div class="field">
+              <div class="label">Senha</div>
+              <input class="input" id="admPass" placeholder="ex: 12345" type="password" autocomplete="current-password">
+            </div>
+
+            <button class="btn" id="btnLogin">Entrar</button>
+
+            <div class="note">
+              ✅ Regras: apenas usuários cadastrados podem editar.
+              <br>Se quiser, eu adiciono mais admins depois (é só me dizer username/senha).
+            </div>
+          </div>
+        `;
+      }
+
+      box.appendChild(sec);
+      content.appendChild(box);
+
+      const toast = document.getElementById("admToast");
+      if(toast){
+        toast.innerHTML = isAdmin()
+          ? `Status: <b>ADM logado</b> (edição liberada).`
+          : `Status: <b>público</b> (sem edição).`;
+      }
+
+      // listeners
+      if(!isAdmin()){
+        const btn = document.getElementById("btnLogin");
+        btn?.addEventListener("click", ()=>{
+          const u = (document.getElementById("admUser")?.value || "").trim();
+          const p = (document.getElementById("admPass")?.value || "").trim();
+          const ok = ADMIN_CREDENTIALS.some(x => x.user === u && x.pass === p);
+          if(ok){
+            setSession(u);
+            alert("Login OK! Agora você pode editar os placares.");
+            render(false);
+          }else{
+            alert("Usuário ou senha inválidos.");
+          }
+        });
+      }else{
+        const out = document.getElementById("btnLogout");
+        out?.addEventListener("click", ()=>{
+          clearSession();
+          alert("Você saiu do modo ADM.");
+          render(false);
+        });
+      }
+    }
+
+    /* =========================================================
+      5) Copiar resumo + reset
+    ========================================================= */
+
+    async function copyText(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("Copiado!");
+      }catch{
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        alert("Copiado!");
+      }
+    }
+
+    function buildResumo(){
+      const tables = computeAllTables();
+      let out = "🏆 RECNATORS CUP — RESUMO\n\n";
+      out += `Séries decididas: ${countDecidedSeries()}/${totalSeries()}\n`;
+      out += `Gols digitados: ${totalGoals()}\n\n`;
+
+      out += "📅 CALENDÁRIO\n";
+      for(const d of SCHEDULE){
+        out += `\n• ${d.date} — ${d.title}\n`;
+        for(const gKey of Object.keys(d.groups)){
+          out += `  🏆 Grupo ${gKey}\n`;
+          for(const [a,b] of d.groups[gKey]){
+            const id = makeMatchId(d.key, gKey, a, b);
+            const inf = seriesInfo(getSeries(id));
+            out += `   - ${TEAMS[a].name} x ${TEAMS[b].name} (série ${inf.wA}-${inf.wB})\n`;
+          }
+        }
+      }
+
+      out += "\n\n📊 CLASSIFICAÇÃO\n";
+      for(const gKey of GROUP_KEYS){
+        out += `\n🏆 Grupo ${gKey}\n`;
+        tables[gKey].forEach((r,i)=>{
+          out += `${i+1}. ${TEAMS[r.teamId].name} — ${r.pts} pts (SG ${r.sg}, GF ${r.gf})\n`;
+        });
+      }
+      return out.trim();
+    }
+
+    document.getElementById("btnCopyResumo").addEventListener("click", ()=>{
+      copyText(buildResumo());
+    });
+
+    document.getElementById("btnResetAll").addEventListener("click", ()=>{
+      if(confirm("Reset geral: apagar TODOS os resultados salvos neste aparelho?")){
+        localStorage.removeItem(STORAGE_KEY);
+        state = {};
+        alert("Resetado. (Apenas neste aparelho.)");
+        render(false);
+      }
+    });
+
+    /* =========================================================
+      6) Start
+    ========================================================= */
+    updateAdminPill();
+    setActiveTab(currentView);
+    render(false);
+  </script>
+</body>
+</html>
