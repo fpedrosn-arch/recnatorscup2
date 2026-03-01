@@ -9,9 +9,9 @@
   "description": "App oficial da Recnators Cup RL",
   "icons": [
     {
-      "src": "/RECNATORSCUP2/icon.png",
+      "src": "/RECNATORSCUP2/icon.png.jpeg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/png.jpeg",
       "purpose": "any maskable"
     }
   ]
